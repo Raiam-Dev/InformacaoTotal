@@ -1,5 +1,5 @@
+import 'package:app_biblioteca/cores/cores_globais.dart';
 import 'package:app_biblioteca/servico/clound_firebase_servico.dart';
-import 'package:app_biblioteca/widgets/menu_lateral.dart';
 import 'package:flutter/material.dart';
 
 class PaginaCriarDocumento extends StatefulWidget {
@@ -26,7 +26,9 @@ class _PaginaCriarDocumentoState extends State<PaginaCriarDocumento> {
     setState(() => _salvando = true);
 
     final documento = Documento(
-      _controllerImagem.text.trim(),
+      _controllerImagem.text.trim().isEmpty
+          ? 'https://i.ytimg.com/vi/vgjovgJEpec/maxresdefault.jpg'
+          : _controllerImagem.text.trim(),
       _controllerTitle.text.trim(),
       _controllerSubtitulo.text.trim(),
       _controllerTexto.text.trim(),
@@ -68,9 +70,6 @@ class _PaginaCriarDocumentoState extends State<PaginaCriarDocumento> {
   @override
   Widget build(BuildContext context) {
     final largura = MediaQuery.of(context).size.width;
-
-    final menuLateral = MenuLateral(width: largura * 0.20, children: const []);
-
     final formulario = Form(
       key: _formKey,
       child: ListView(
@@ -106,18 +105,6 @@ class _PaginaCriarDocumentoState extends State<PaginaCriarDocumento> {
               border: OutlineInputBorder(),
               hintText: 'Cole a URL da imagem de capa',
             ),
-            validator: (v) {
-              if (v == null || v.trim().isEmpty) {
-                return 'URL da imagem é obrigatória';
-              }
-              final urlPattern =
-                  r'(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|png|gif|bmp)';
-              final regex = RegExp(urlPattern, caseSensitive: false);
-              if (!regex.hasMatch(v.trim())) {
-                return 'Informe uma URL válida de imagem';
-              }
-              return null;
-            },
           ),
           const SizedBox(height: 20),
           TextFormField(
@@ -147,10 +134,13 @@ class _PaginaCriarDocumentoState extends State<PaginaCriarDocumento> {
                         color: Colors.white,
                       ),
                     )
-                  : const Icon(Icons.save),
-              label: Text(_salvando ? 'Salvando...' : 'Salvar Documento'),
+                  : const Icon(Icons.save, color: Colors.white),
+              label: Text(
+                _salvando ? 'Salvando...' : 'Salvar Documento',
+                style: TextStyle(color: Colors.white),
+              ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.redAccent,
+                backgroundColor: Colors.red,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 textStyle: const TextStyle(fontSize: 16),
               ),
@@ -161,18 +151,18 @@ class _PaginaCriarDocumentoState extends State<PaginaCriarDocumento> {
     );
 
     return Scaffold(
+      backgroundColor: corPadrao,
       appBar: AppBar(
-        title: const Text('Criar Documento'),
-        backgroundColor: Colors.redAccent,
+        iconTheme: IconThemeData(color: Colors.white),
+        centerTitle: true,
+        title: const Text(
+          'Criar Documento',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: corPadrao,
       ),
-      drawer: largura < 800 ? Drawer(child: menuLateral) : null,
       body: largura >= 800
-          ? Row(
-              children: [
-                menuLateral,
-                Expanded(child: formulario),
-              ],
-            )
+          ? Row(children: [Expanded(child: formulario)])
           : formulario,
     );
   }

@@ -1,10 +1,12 @@
+import 'package:app_biblioteca/cores/cores_globais.dart';
 import 'package:flutter/material.dart';
 import 'package:app_biblioteca/servico/clound_firebase_servico.dart';
 import 'package:app_biblioteca/widgets/menu_lateral.dart';
 
 class PaginaDocumento extends StatefulWidget {
   final String texto;
-  const PaginaDocumento({required this.texto, super.key});
+  final String title;
+  const PaginaDocumento({required this.texto, required this.title, super.key});
 
   @override
   State<PaginaDocumento> createState() => _PaginaDocumentoState();
@@ -15,34 +17,41 @@ class _PaginaDocumentoState extends State<PaginaDocumento> {
 
   @override
   Widget build(BuildContext context) {
-    final largura = MediaQuery.of(context).size.width;
-
     return Scaffold(
+      backgroundColor: corPadrao,
       appBar: AppBar(
-        title: const Text("Documento"),
-        backgroundColor: Colors.redAccent,
+        centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text('Documento', style: TextStyle(color: Colors.white)),
+        backgroundColor: corPadrao,
       ),
-      drawer: largura < 800
-          ? Drawer(
-              child: MenuLateral(width: largura * 0.25, children: const []),
-            )
-          : null,
-      body: Row(
-        children: [
-          if (largura >= 800)
-            MenuLateral(width: largura * 0.20, children: const []),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: SingleChildScrollView(
-                child: Text(
-                  widget.texto,
-                  style: const TextStyle(fontSize: 16, height: 1.5),
+      body: Expanded(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Text(
+                  widget.title,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
+                SizedBox(height: 10),
+                Text(
+                  widget.texto,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    height: 1.5,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }

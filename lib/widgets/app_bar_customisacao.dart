@@ -15,6 +15,7 @@ class _AppbarCustomisacaoState extends State<AppBarCustomisacao> {
     return AppBar(
       iconTheme: IconThemeData(color: Colors.white),
       centerTitle: true,
+      toolbarHeight: 50,
       title: SizedBox(
         width: 800,
         height: 40,
@@ -26,6 +27,17 @@ class _AppbarCustomisacaoState extends State<AppBarCustomisacao> {
           onFieldSubmitted: (value) {},
         ),
       ),
+      actions: [
+        PopupMenuButton(
+          itemBuilder: (context) {
+            return [
+              PopupMenuItem(child: Text('Programacao')),
+              PopupMenuItem(child: Text('Eletronica')),
+              PopupMenuItem(child: Text('Empreendedorismo')),
+            ];
+          },
+        ),
+      ],
       elevation: 0,
       backgroundColor: corPadrao,
       surfaceTintColor: corPadrao,

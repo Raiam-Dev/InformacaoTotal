@@ -1,5 +1,4 @@
 import 'package:app_biblioteca/cores/cores_globais.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class PaginaShorts extends StatefulWidget {

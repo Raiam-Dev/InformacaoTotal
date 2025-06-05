@@ -47,30 +47,45 @@ class _PaginaPainelState extends State<PaginaPainel> {
     return 1;
   }
 
+  void excluirDocumento(var doc, context) async {
+    try {
+      await database.excluirDocumento(doc['id']);
+    } catch (erro) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro Desconhecido'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   Widget _buildCard(Map<String, dynamic> doc, double cardHeight) {
     final imagemUrl = doc['imagem'];
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) =>
-                PaginaDocumento(texto: doc['texto'] ?? '', title: doc['title']),
-          ),
-        );
-      },
-      child: Container(
-        padding: EdgeInsets.all(5),
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-        ),
-        child: Column(
-          children: [
-            AspectRatio(
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => PaginaDocumento(
+                    texto: doc['texto'] ?? '',
+                    title: doc['title'],
+                    id: doc['id'],
+                  ),
+                ),
+              );
+            },
+            child: AspectRatio(
               aspectRatio: 16 / 9,
               child: ClipRRect(
-                borderRadius: BorderRadiusGeometry.all(Radius.circular(10)),
+                borderRadius: BorderRadiusGeometry.all(Radius.circular(0)),
                 child: Image.network(
                   imagemUrl,
                   fit: BoxFit.cover,
@@ -79,60 +94,75 @@ class _PaginaPainelState extends State<PaginaPainel> {
                 ),
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundColor: Colors.transparent,
-                  child: ClipRRect(
-                    borderRadius: BorderRadiusGeometry.circular(100),
-                    child: Image.network(
-                      'https://static.vecteezy.com/system/resources/previews/016/133/305/non_2x/rk-logo-design-monogram-emblem-style-with-crown-shape-template-icon-vector.jpg',
-                    ),
-                  ),
+          ),
+          SizedBox(height: 4),
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 4),
+            leading: CircleAvatar(
+              radius: 20,
+              backgroundColor: Colors.transparent,
+              child: ClipRRect(
+                borderRadius: BorderRadiusGeometry.circular(100),
+                child: Image.network(
+                  'https://static.vecteezy.com/system/resources/previews/016/133/305/non_2x/rk-logo-design-monogram-emblem-style-with-crown-shape-template-icon-vector.jpg',
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        doc['title'] ?? 'Sem título',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontFamily: "Roboto",
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                          letterSpacing: 0.1,
-                          height: 1.3,
-                        ),
-                      ),
-
-                      const SizedBox(height: 4),
-                      Text(
-                        doc['subtitulo'] ?? '',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontFamily: "Roboto",
-                          fontWeight: FontWeight.w400,
-                          color: Color(0xFFAAAAAA),
-                          letterSpacing: 0,
-                          height: 1.2,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
-          ],
-        ),
+            title: Text(
+              doc['title'] ?? 'Sem título',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 16,
+                fontFamily: "Roboto",
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+                letterSpacing: 0.1,
+                height: 1.3,
+              ),
+            ),
+            subtitle: Text(
+              doc['subtitulo'] ?? '',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 13,
+                fontFamily: "Roboto",
+                fontWeight: FontWeight.w400,
+                color: Color(0xFFAAAAAA),
+                letterSpacing: 0,
+                height: 1.2,
+              ),
+            ),
+            trailing: IconButton(
+              onPressed: () {},
+              icon: PopupMenuButton(
+                shape: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                itemBuilder: (contex) {
+                  return [
+                    PopupMenuItem(
+                      child: Text("Excluir"),
+                      onTap: () {
+                        setState(() {
+                          excluirDocumento(doc, context);
+                          _carregarDocumentos();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Excludo Sucesso'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        });
+                      },
+                    ),
+                  ];
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -143,6 +173,7 @@ class _PaginaPainelState extends State<PaginaPainel> {
     final colunas = _calcularColunas(largura);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: corPadrao,
       appBar: indexBottomNavigator == 0 ? AppBarCustomisacao() : null,
       drawer: Drawer(
@@ -180,7 +211,12 @@ class _PaginaPainelState extends State<PaginaPainel> {
                   ),
                 Expanded(
                   child: carregando
-                      ? const Center(child: CircularProgressIndicator())
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.red,
+                            strokeWidth: 3,
+                          ),
+                        )
                       : documentos.isEmpty
                       ? const Center(
                           child: Text(
@@ -190,28 +226,34 @@ class _PaginaPainelState extends State<PaginaPainel> {
                         )
                       : RefreshIndicator(
                           onRefresh: _carregarDocumentos,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: GridView.builder(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: colunas,
-                                    crossAxisSpacing: 4,
-                                    mainAxisSpacing: 1,
-                                    childAspectRatio: 1.2,
-                                  ),
-                              itemCount: documentos.length,
-                              itemBuilder: (context, index) {
-                                final doc = documentos[index];
-                                return LayoutBuilder(
-                                  builder: (context, constraints) {
-                                    final cardHeight =
-                                        constraints.maxWidth * 0.75;
-                                    return _buildCard(doc, cardHeight);
+                          color: Colors.red,
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.8,
+                                child: GridView.builder(
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: colunas,
+                                        crossAxisSpacing: 4,
+                                        mainAxisSpacing: 1,
+                                        childAspectRatio: 1.2,
+                                      ),
+                                  itemCount: documentos.length,
+                                  itemBuilder: (context, index) {
+                                    final doc = documentos[index];
+                                    return LayoutBuilder(
+                                      builder: (context, constraints) {
+                                        final cardHeight =
+                                            constraints.maxWidth * 0.75;
+                                        return _buildCard(doc, cardHeight);
+                                      },
+                                    );
                                   },
-                                );
-                              },
-                            ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                 ),

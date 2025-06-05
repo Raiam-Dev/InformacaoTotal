@@ -45,7 +45,11 @@ class _PaginaCriarDocumentoState extends State<PaginaCriarDocumento> {
       await dataBase.criarDocumento(mapa);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Documento salvo com sucesso!')),
+        const SnackBar(
+          duration: Duration(milliseconds: 500),
+          content: Text('Documento salvo com sucesso!'),
+          backgroundColor: Colors.green,
+        ),
       );
       Navigator.pop(context);
     } catch (e) {
@@ -76,22 +80,52 @@ class _PaginaCriarDocumentoState extends State<PaginaCriarDocumento> {
         padding: const EdgeInsets.all(24),
         children: [
           TextFormField(
+            style: TextStyle(color: Colors.white),
+            cursorErrorColor: Colors.red,
+            cursorColor: Colors.white,
+
             controller: _controllerTitle,
             decoration: const InputDecoration(
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red),
+              ),
+
               labelText: 'Título',
-              border: OutlineInputBorder(),
+              labelStyle: TextStyle(color: Colors.white),
+
               hintText: 'Digite o título do documento',
+              hintStyle: TextStyle(color: Colors.white),
+
+              border: OutlineInputBorder(),
             ),
             validator: (v) =>
                 (v == null || v.trim().isEmpty) ? 'Título obrigatório' : null,
           ),
           const SizedBox(height: 20),
           TextFormField(
+            style: TextStyle(color: Colors.white),
+            cursorErrorColor: Colors.red,
+            cursorColor: Colors.white,
+
             controller: _controllerSubtitulo,
             decoration: const InputDecoration(
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red),
+              ),
+
               labelText: 'Subtítulo',
-              border: OutlineInputBorder(),
+              labelStyle: TextStyle(color: Colors.white),
+
               hintText: 'Digite o subtítulo do documento',
+              hintStyle: TextStyle(color: Colors.white),
+
+              border: OutlineInputBorder(),
             ),
             validator: (v) => (v == null || v.trim().isEmpty)
                 ? 'Subtítulo obrigatório'
@@ -99,20 +133,50 @@ class _PaginaCriarDocumentoState extends State<PaginaCriarDocumento> {
           ),
           const SizedBox(height: 20),
           TextFormField(
+            style: TextStyle(color: Colors.white),
+            cursorErrorColor: Colors.red,
+            cursorColor: Colors.white,
+
             controller: _controllerImagem,
             decoration: const InputDecoration(
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red),
+              ),
+
               labelText: 'URL da Imagem de Capa',
-              border: OutlineInputBorder(),
+              labelStyle: TextStyle(color: Colors.white),
+
               hintText: 'Cole a URL da imagem de capa',
+              hintStyle: TextStyle(color: Colors.white),
+
+              border: OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 20),
           TextFormField(
+            style: TextStyle(color: Colors.white),
+            cursorErrorColor: Colors.red,
+            cursorColor: Colors.white,
+
             controller: _controllerTexto,
             decoration: const InputDecoration(
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.red),
+              ),
+
               labelText: 'Conteúdo do Documento',
-              border: OutlineInputBorder(),
+              labelStyle: TextStyle(color: Colors.white),
+
               hintText: 'Digite o texto completo do documento',
+              hintStyle: TextStyle(color: Colors.white),
+
+              border: OutlineInputBorder(),
               alignLabelWithHint: true,
             ),
             maxLines: 10,

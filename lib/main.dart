@@ -21,7 +21,8 @@ class MyApp extends StatelessWidget {
       routes: {
         'PaginaCriarDocumento': (context) => PaginaCriarDocumento(),
         'PaginaPainel': (context) => PaginaPainel(),
-        'PaginaDocumento': (context) => PaginaDocumento(texto: '', title: ''),
+        'PaginaDocumento': (context) =>
+            PaginaDocumento(texto: '', title: '', id: ''),
       },
       home: PaginaPainel(),
     );
